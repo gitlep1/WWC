@@ -1,0 +1,37 @@
+$large: 1000px;
+$giant: 1200px;
+
+$Queen: url("../../../Images/Promotions/Queen.png");
+$Rook: url("../../../Images/Promotions/Rook.png");
+$Bishop: url("../../../Images/Promotions/Bishop.png");
+$Knight: url("../../../Images/Promotions/Knight.png");
+
+@mixin gamePageSection {
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+.desktop-gamePageSection {
+  @include gamePageSection;
+}
+
+.mobile-gamePageSection {
+  @include gamePageSection;
+}
+
+#queenButton {
+  background-image: $Queen;
+}
+
+#rookButton {
+  background-image: $Rook;
+}
+
+#bishopButton {
+  background-image: $Bishop;
+}
+
+#knightButton {
+  background-image: $Knight;
+}
