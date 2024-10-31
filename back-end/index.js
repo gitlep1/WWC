@@ -29,6 +29,7 @@ const allowedOrigins = [
   "https://world-wide-chess-updates.vercel.app",
   "https://world-wide-chess.netlify.app",
   "https://world-wide-chess-updates.netlify.app",
+  "https://world-wide-chess-updates-api.vercel.app",
 ];
 
 const httpServer = http.createServer(app);
