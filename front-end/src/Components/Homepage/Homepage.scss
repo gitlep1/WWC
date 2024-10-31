@@ -35,10 +35,24 @@ $extra-large-desktop: 1400px;
   grid-template-columns: 1;
   display: grid;
   grid-template-columns: 1;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 200px 250px 1fr;
+  height: 90%;
 
   .homepage-previous-matches {
     //
+  }
+
+  .homepage-news {
+    color: white;
+    overflow: auto;
+
+    .news-title {
+      color: red;
+    }
+
+    .news-note {
+      color: orange;
+    }
   }
 }
 

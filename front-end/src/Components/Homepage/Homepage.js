@@ -42,7 +42,41 @@ const Homepage = ({ screenVersion, user, token }) => {
             </div>
           </div>
 
-          {/* <div className="homepage-previous-matches">Previous Matches</div> */}
+          <div className="homepage-previous-matches"></div>
+
+          {/* add color identifiers later (red = urgent, yellow = warning, green = good) use small boxes with the corresponding background color */}
+          <div className="homepage-news">
+            <span>
+              <h1>News</h1>
+            </span>
+            <p>
+              <span className="news-title">Site Status Update</span>: The site
+              is currently in offline mode as I transition to a different
+              backend hosting site. My previous host, Adaptable.io, recently
+              discontinued its free tier, impacting the site's real-time
+              functionality powered by Socket.io.
+              <br />
+              <br />
+              <span className="news-note">Features affected by this</span>:
+              <br />
+              Multiplayer
+              <br />
+              chat system
+              <br />
+              Tasks (can only be completed in multiplayer)
+              <br />
+              <br />
+              To ensure a better and more sustainable user experience, I'm
+              migrating to AWS for backend hosting.
+              <br />
+              This upgrade involves me learning and integrating new
+              technologies, so the process will take time.
+              <br />
+              <br />
+              Thank you for your patience and support as I work to bring
+              everything back online!
+            </p>
+          </div>
         </div>
 
         <div className="homepage-section-two">
@@ -73,14 +107,20 @@ const Homepage = ({ screenVersion, user, token }) => {
               </div>
               <div className="tasks-content">
                 {user.is_guest ? (
-                  <p>
-                    Please create an account to participate in daily and monhtly
-                    tasks for rewards.
+                  <p style={{ color: "red" }}>
+                    {/* Please create an account to participate in daily and monhtly
+                    tasks for rewards. */}
+                    Offline
                   </p>
                 ) : dailyTaskSelected ? (
-                  <DailyTasks user={user} token={token} />
+                  // <DailyTasks user={user} token={token} />
+                  <div>
+                    <p style={{ color: "red" }}>Offline</p>
+                  </div>
                 ) : (
-                  <MonthlyTasks user={user} token={token} />
+                  // <MonthlyTasks user={user} token={token} />
+
+                  <p style={{ color: "red" }}>Offline</p>
                 )}
               </div>
             </div>

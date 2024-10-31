@@ -76,18 +76,17 @@ const RenderSingleGames = ({
             <span className="room-status">
               <section className="lobby-status-buttons">
                 {singleGame.in_progress ? (
-                  // <div
-                  //   onClick={() => {
-                  //     singleGame.room_password
-                  //       ? handleShowPasswordModal()
-                  //       : console.log("no password");
-                  //     handleJoin(singleGame.id);
-                  //   }}
-                  //   className="lobby-button-one"
-                  // >
-                  //   SPECTATE
-                  // </div>
-                  <div className="lobby-button-two">SPECTATE</div>
+                  <div
+                    onClick={() => {
+                      singleGame.room_password
+                        ? handleShowPasswordModal()
+                        : console.log("no password");
+                      handleJoin(singleGame.id);
+                    }}
+                    className="lobby-button-one"
+                  >
+                    SPECTATE
+                  </div>
                 ) : (
                   <div className="lobby-button-two">SPECTATE</div>
                 )}

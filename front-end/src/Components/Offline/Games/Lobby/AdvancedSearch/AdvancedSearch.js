@@ -11,7 +11,7 @@ const FilterSearch = ({
   setSingleGamesCopy,
   multiGames,
   setMultiGamesCopy,
-  // socket,
+  socket,
   token,
 }) => {
   const [minRating, setMinRating] = useState("");
@@ -42,30 +42,30 @@ const FilterSearch = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // socket.off("get-single-games");
-    // socket.off("get-multi-games");
+    socket.off("get-single-games");
+    socket.off("get-multi-games");
 
     let singleGamesList;
     let multiGamesList;
 
     if (allowSpecs) {
       singleGamesList = singleGames.filter((game) => game.allow_specs);
-
+      
       multiGamesList = multiGames.filter((game) => game.allow_specs);
     }
 
     if (roomsWithPasswords) {
       singleGamesList = singleGames.filter((game) => game.room_password);
-
+      
       multiGamesList = multiGames.filter((game) => game.room_password);
     }
 
     if (fullRooms) {
       singleGamesList = singleGames.filter((game) => game.in_progress);
-
+      
       multiGamesList = multiGames.filter((game) => game.in_progress);
     }
-
+    
     setSingleGamesCopy(singleGamesList);
     setMultiGamesCopy(multiGamesList);
   };
@@ -100,8 +100,8 @@ const FilterSearch = ({
     setSingleGamesCopy(singlePlayerGames);
     setMultiGamesCopy(multiPlayerGames);
 
-    // socket.emit("get-single-games");
-    // socket.emit("get-multi-games");
+    socket.emit("get-single-games");
+    socket.emit("get-multi-games");
   };
 
   return (

@@ -1,17 +1,14 @@
 import "./RenderGames.scss";
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import axios from "axios";
 
-const API = process.env.REACT_APP_API_URL;
-
-const RenderSingleGames = ({
+const RenderMultiGames = ({
   screenVersion,
-  singleGamesCopy = [],
+  multiGamesCopy = [],
   joinWithPassword,
   setJoinWithPassword,
   handleJoin,
-  sortingByTextSingle,
+  sortingByTextMulti,
   loading,
   error,
 }) => {
@@ -36,60 +33,69 @@ const RenderSingleGames = ({
     setJoinWithPassword("");
   };
 
-  const botSelection = (game) => {
-    if (game.botid === 1) {
-      return "Easy Bot";
-    } else if (game.botid === 2) {
-      return "Medium Bot";
-    } else if (game.botid === 3) {
-      return "Hard Bot";
-    } else {
-      return `Selecting Bot...`;
-    }
-  };
-
-  if (sortingByTextSingle === "Room Number (Default)") {
-    singleGamesCopy.sort((a, b) => a.id - b.id);
-  } else if (sortingByTextSingle === "Name") {
-    singleGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
-  } else if (sortingByTextSingle === "Rank") {
-    singleGamesCopy.sort((a, b) => a.id - b.id);
-  } else if (sortingByTextSingle === "Region") {
-    singleGamesCopy.sort((a, b) => a.id - b.id);
+  if (sortingByTextMulti === "Room Number (Default)") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextMulti === "Name") {
+    multiGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
+  } else if (sortingByTextMulti === "Rank") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextMulti === "Region") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
   }
 
-  const renderSingleGames = () => {
+  const renderMultiGames = () => {
     if (loading) {
       return <h1>Loading...</h1>;
     } else if (error) {
       return <h1>Error: {error}</h1>;
     } else {
-      return singleGamesCopy.map((singleGame) => {
+      return multiGamesCopy.map((multiGame) => {
         return (
-          <div className="room-info-box" key={singleGame.id}>
-            <span className="room-number">{singleGame.id}</span>{" "}
-            <span className="room-name">{singleGame.room_name}</span>
+          <div className="room-info-box" key={multiGame.id}>
+            <span className="room-number">{multiGame.id}</span>{" "}
+            <span className="room-name">{multiGame.room_name}</span>
             <div className="room-players">
-              <span>{singleGame.player1}</span> vs
-              <span>{botSelection(singleGame)}</span>
+              <span>{multiGame.player1}</span> vs
+              <span>{multiGame.player2 || "Waiting for opponent..."}</span>
             </div>
             <span className="room-status">
               <section className="lobby-status-buttons">
-                {singleGame.in_progress ? (
-                  // <div
-                  //   onClick={() => {
-                  //     singleGame.room_password
-                  //       ? handleShowPasswordModal()
-                  //       : console.log("no password");
-                  //     handleJoin(singleGame.id);
-                  //   }}
-                  //   className="lobby-button-one"
-                  // >
-                  //   SPECTATE
-                  // </div>
-                  <div className="lobby-button-two">SPECTATE</div>
+                {multiGame.in_progress ? (
+                  <>
+                    <div className="lobby-button-two">JOIN</div>
+
+                    <div
+                      onClick={() => {
+                        multiGame.room_password
+                          ? handleShowPasswordModal()
+                          : console.log("no password");
+                        handleJoin(multiGame.id);
+                      }}
+                      className="lobby-button-one"
+                    >
+                      SPECTATE
+                    </div>
+                  </>
                 ) : (
-                  <div className="lobby-button-two">SPECTATE</div>
+                  <>
+                    <div
+                      className="lobby-button-one"
+                      onClick={() => {
+                        multiGame.room_password ? (
+                          <>
+                            {handleShowPasswordModal()}
+                            {setPasswordGameId(multiGame.id)}
+                          </>
+                        ) : (
+                          handleJoin(multiGame.id)
+                        );
+                      }}
+                    >
+                      JOIN
+                    </div>
+
+                    <div className="lobby-button-two">SPECTATE</div>
+                  </>
                 )}
               </section>
             </span>
@@ -101,7 +107,7 @@ const RenderSingleGames = ({
 
   return (
     <section className={`${screenVersion}-render-games-container`}>
-      {renderSingleGames()}
+      {renderMultiGames()}
 
       <Modal
         show={showPasswordModal}
@@ -138,4 +144,4 @@ const RenderSingleGames = ({
   );
 };
 
-export default RenderSingleGames;
+export default RenderMultiGames;

@@ -19,23 +19,23 @@ const ChatBox = ({ token, socket, user }) => {
 
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    socket.emit("get-all-messages");
+  // useEffect(() => {
+  //   socket.emit("get-all-messages");
 
-    socket.on("all-messages", (data) => {
-      setMessages(data);
-      scrollToBottom();
-    });
+  //   socket.on("all-messages", (data) => {
+  //     setMessages(data);
+  //     scrollToBottom();
+  //   });
 
-    socket.on("get-all-messages-error", (error) => {
-      setError(error);
-    });
+  //   socket.on("get-all-messages-error", (error) => {
+  //     setError(error);
+  //   });
 
-    return () => {
-      socket.off("all-messages");
-      socket.off("get-all-messages-error");
-    };
-  }, []); // eslint-disable-line
+  //   return () => {
+  //     socket.off("all-messages");
+  //     socket.off("get-all-messages-error");
+  //   };
+  // }, []); // eslint-disable-line
 
   useEffect(() => {
     scrollToBottom();
@@ -120,9 +120,10 @@ const ChatBox = ({ token, socket, user }) => {
             <div className="chat-box-messages">
               {error === "" ? (
                 <div className="messages" ref={chatBoxRef}>
-                  {messages.map((message) => (
+                  <h1 className="chatbox-offline">Offline</h1>
+                  {/* {messages.map((message) => (
                     <Messages key={nanoid()} message={message} />
-                  ))}
+                  ))} */}
                 </div>
               ) : (
                 <p style={{ color: "red" }}>Error: {error}</p>
@@ -138,14 +139,14 @@ const ChatBox = ({ token, socket, user }) => {
               </div>
             </div>
 
-            <div className="chat-box-message">
+            {/* <div className="chat-box-message">
               <Message
                 user={user}
                 token={token}
                 socket={socket}
                 onMessageCreated={handleMessageCreated}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       )}

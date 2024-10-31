@@ -107,10 +107,13 @@
       height: 100vh;
 
       .messages {
+        text-align: center;
+        align-content: center;
         padding-left: 3%;
         border-radius: 1em;
         height: 40%;
         overflow-y: auto;
+        color: red;
       }
     }
 
@@ -150,6 +153,14 @@
           padding-left: 3%;
           overflow-y: auto;
           border-radius: 1em;
+
+          .chatbox-offline {
+            position: absolute;
+            top: 35%;
+            right: 25%;
+            font-size: 50px;
+            color: white;
+          }
         }
       }
 

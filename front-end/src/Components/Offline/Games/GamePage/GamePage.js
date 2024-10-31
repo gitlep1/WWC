@@ -61,11 +61,11 @@ const GamePage = ({
 
   const endGame = async (gameID) => {
     try {
-      // if (gameData.isMulti) {
-      //   socket.emit("multi-end-game", gameID, token);
-      // } else {
-      //   socket.emit("single-end-game", gameID, token);
-      // }
+      if (gameData.isMulti) {
+        socket.emit("multi-end-game", gameID, token);
+      } else {
+        socket.emit("single-end-game", gameID, token);
+      }
 
       toast.success("Game ended.", {
         containerId: "general-toast",
@@ -106,29 +106,28 @@ const GamePage = ({
   };
 
   const renderSingleOrMultiGame = () => {
+    console.log({ error });
     if (loading) {
       return <div>Loading...</div>;
     } else if (error) {
       return <div>ERROR: {error}</div>;
-    }
-    // else if (gameData.isMulti) {
-    //   return (
-    //     <MultiPlayerGame
-    //       screenVersion={screenVersion}
-    //       user={user}
-    //       game={game}
-    //       setGame={setGame}
-    //       player1Data={player1Data}
-    //       player2Data={player2Data}
-    //       setPlayer1Data={setPlayer1Data}
-    //       setPlayer2Data={setPlayer2Data}
-    //       endGame={endGame}
-    //       socket={socket}
-    //       token={token}
-    //     />
-    //   );
-    // }
-    else {
+    } else if (gameData.isMulti) {
+      return (
+        <MultiPlayerGame
+          screenVersion={screenVersion}
+          user={user}
+          game={game}
+          setGame={setGame}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
+          setPlayer2Data={setPlayer2Data}
+          endGame={endGame}
+          socket={socket}
+          token={token}
+        />
+      );
+    } else {
       return (
         <SinglePlayerGame
           screenVersion={screenVersion}
@@ -140,7 +139,7 @@ const GamePage = ({
           setPlayer1Data={setPlayer1Data}
           setPlayer2Data={setPlayer2Data}
           endGame={endGame}
-          // socket={socket}
+          socket={socket}
           token={token}
         />
       );

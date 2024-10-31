@@ -1,0 +1,83 @@
+$large-mobile: 600px;
+
+$small-desktop: 800px;
+$medium-desktop: 1100px;
+$large-desktop: 1400px;
+
+.single-player-game-settings-container {
+  text-align: center;
+  margin: 0 auto;
+  height: 100%;
+
+  .single-player-game-settings-title {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: 1fr 100px 1fr;
+    margin-bottom: 1em;
+
+    .single-player-game-settings-playerData {
+      height: 100%;
+
+      .playerData-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+
+        .ties {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    h4 {
+      color: red;
+      font-size: 35px;
+    }
+
+    .single-player-game-settings-botData {
+      height: 100%;
+
+      .botData-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+
+        .ties {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    .single-player-game-settings-title-profile-image {
+      width: 100px;
+    }
+
+    .game-settings-stats-icon {
+      width: 30px;
+    }
+
+    .single-player-game-settings-buttons {
+      grid-column: 1 / -1;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+
+      button {
+        font-size: 23px;
+      }
+    }
+  }
+
+  .single-player-game-settings-bot-roster {
+    display: grid;
+    grid-template-columns: 1;
+    height: 95%;
+    overflow: auto;
+  }
+}

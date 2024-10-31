@@ -35,14 +35,26 @@ const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
     credentials: true,
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   },
 });
 
 app.use(
   cors({
     credentials: true,
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 

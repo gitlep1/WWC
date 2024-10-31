@@ -15,7 +15,7 @@ const GameSettings = ({
   screenVersion,
   user,
   token,
-  // socket,
+  socket,
   player1Data,
   player2Data,
   setPlayer1Data,
@@ -68,19 +68,18 @@ const GameSettings = ({
 
           <div className="game-settings-options">
             {game.is_multiplayer ? (
-              // <MultiPlayerGameSettings
-              //   game={game}
-              //   setGame={setGame}
-              //   user={user}
-              //   token={token}
-              //   error={error}
-              //   // socket={socket}
-              //   player1Data={player1Data}
-              //   player2Data={player2Data}
-              //   setPlayer1Data={setPlayer1Data}
-              //   setPlayer2Data={setPlayer2Data}
-              // />
-              <h1>Disabled</h1>
+              <MultiPlayerGameSettings
+                game={game}
+                setGame={setGame}
+                user={user}
+                token={token}
+                error={error}
+                socket={socket}
+                player1Data={player1Data}
+                player2Data={player2Data}
+                setPlayer1Data={setPlayer1Data}
+                setPlayer2Data={setPlayer2Data}
+              />
             ) : (
               <SinglePlayerGameSettings
                 game={game}
@@ -88,7 +87,7 @@ const GameSettings = ({
                 user={user}
                 token={token}
                 error={error}
-                // socket={socket}
+                socket={socket}
                 player1Data={player1Data}
                 player2Data={player2Data}
                 setPlayer1Data={setPlayer1Data}
