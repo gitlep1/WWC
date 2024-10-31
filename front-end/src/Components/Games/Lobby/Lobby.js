@@ -29,7 +29,7 @@ const Lobbypage = ({
   isMultiplayer,
   setIsMultiplayer,
   token,
-  socket,
+  // socket,
 }) => {
   const navigate = useNavigate();
 
@@ -64,43 +64,62 @@ const Lobbypage = ({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    socket.emit("get-single-games");
-    socket.emit("get-multi-games");
+    getSingleGamesData();
+  }, []); // eslint-disable-line
 
-    socket.on("single-games", (singleGames) => {
-      setSingleGames(singleGames);
-      setSingleGamesCopy(singleGames);
-      setLoading(false);
-    });
+  const getSingleGamesData = async () => {
+    await axios
+      .get(`${API}/single-games`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setSingleGames(res.data.payload);
+        setSingleGamesCopy(res.data.payload);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  };
 
-    socket.on("multi-games", (multiGames) => {
-      setMultiGames(multiGames);
-      setMultiGamesCopy(multiGames);
-      setLoading(false);
-    });
+  // useEffect(() => {
+  //   socket.emit("get-single-games");
+  //   socket.emit("get-multi-games");
 
-    socket.on("asking-host", async () => {
-      handlePlayerJoining();
-    });
+  //   socket.on("single-games", (singleGames) => {
+  //     setSingleGames(singleGames);
+  //     setSingleGamesCopy(singleGames);
+  //     setLoading(false);
+  //   });
 
-    socket.on("get-single-games-error", (error) => {
-      setError(error);
-    });
+  //   socket.on("multi-games", (multiGames) => {
+  //     setMultiGames(multiGames);
+  //     setMultiGamesCopy(multiGames);
+  //     setLoading(false);
+  //   });
 
-    socket.on("get-multi-games-error", (error) => {
-      setError(error);
-    });
+  //   socket.on("asking-host", async () => {
+  //     handlePlayerJoining();
+  //   });
 
-    return () => {
-      socket.off("single-games");
-      socket.off("get-single-games-error");
-      socket.off("multi-games");
-      socket.off("get-multi-games-error");
-      socket.off("asking-host");
-      socket.off("host-accepted");
-      socket.off("host-denied");
-    };
-  }, [socket]); // eslint-disable-line
+  //   socket.on("get-single-games-error", (error) => {
+  //     setError(error);
+  //   });
+
+  //   socket.on("get-multi-games-error", (error) => {
+  //     setError(error);
+  //   });
+
+  //   return () => {
+  //     socket.off("single-games");
+  //     socket.off("get-single-games-error");
+  //     socket.off("multi-games");
+  //     socket.off("get-multi-games-error");
+  //     socket.off("asking-host");
+  //     socket.off("host-accepted");
+  //     socket.off("host-denied");
+  //   };
+  // }, [socket]); // eslint-disable-line
 
   useEffect(() => {
     handleSearch();
@@ -237,8 +256,8 @@ const Lobbypage = ({
           },
         })
         .then((res) => {
-          socket.emit("get-multi-games");
-          socket.emit("multi-room-created", res.data.payload, user.id);
+          // socket.emit("get-multi-games");
+          // socket.emit("multi-room-created", res.data.payload, user.id);
 
           const expirationDate = new Date();
           expirationDate.setDate(expirationDate.getDate() + 7);
@@ -271,8 +290,8 @@ const Lobbypage = ({
           },
         })
         .then((res) => {
-          socket.emit("get-single-games");
-          socket.emit("single-room-created", res.data.payload);
+          // socket.emit("get-single-games");
+          // socket.emit("single-room-created", res.data.payload);
 
           const expirationDate = new Date();
           expirationDate.setDate(expirationDate.getDate() + 7);
@@ -292,90 +311,90 @@ const Lobbypage = ({
     }
   };
 
-  const handleJoin = async (gameID) => {
-    const player2ID = user.id;
+  // const handleJoin = async (gameID) => {
+  //   const player2ID = user.id;
 
-    RemoveCookies("gameid");
+  //   RemoveCookies("gameid");
 
-    await axios
-      .get(`${API}/multi-games/${gameID}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        const gamePayload = res.data.payload;
+  //   await axios
+  //     .get(`${API}/multi-games/${gameID}`, {
+  //       headers: {
+  //         authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       const gamePayload = res.data.payload;
 
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 7);
+  //       const expirationDate = new Date();
+  //       expirationDate.setDate(expirationDate.getDate() + 7);
 
-        const gameData = {
-          id: res.data.payload.id,
-          isMulti: res.data.payload.is_multiplayer,
-        };
+  //       const gameData = {
+  //         id: res.data.payload.id,
+  //         isMulti: res.data.payload.is_multiplayer,
+  //       };
 
-        SetCookies("gameid", gameData, expirationDate);
+  //       SetCookies("gameid", gameData, expirationDate);
 
-        if (gamePayload.room_password) {
-          if (gamePayload.room_password === joinWithPassword) {
-            socket.emit("ask-to-join", gamePayload, player2ID);
-          } else {
-            return toast.error("Incorrect room password.", {
-              containerId: "toast-notify",
-            });
-          }
-        } else {
-          socket.emit("ask-to-join", gamePayload, player2ID);
-        }
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
-  };
+  //       if (gamePayload.room_password) {
+  //         if (gamePayload.room_password === joinWithPassword) {
+  //           socket.emit("ask-to-join", gamePayload, player2ID);
+  //         } else {
+  //           return toast.error("Incorrect room password.", {
+  //             containerId: "toast-notify",
+  //           });
+  //         }
+  //       } else {
+  //         socket.emit("ask-to-join", gamePayload, player2ID);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setError(err.message);
+  //     });
+  // };
 
-  const handlePlayerJoining = async () => {
-    handlePlayerJoiningPromise()
-      .then((result) => {
-        toast.success(result, {
-          containerId: "general-toast",
-        });
-      })
-      .catch((error) => {
-        toast.error(error, {
-          containerId: "general-toast",
-        });
-      });
-  };
+  // const handlePlayerJoining = async () => {
+  //   handlePlayerJoiningPromise()
+  //     .then((result) => {
+  //       toast.success(result, {
+  //         containerId: "general-toast",
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error, {
+  //         containerId: "general-toast",
+  //       });
+  //     });
+  // };
 
-  const handlePlayerJoiningPromise = async () => {
-    const toastId = toast.info("Asking Host...", {
-      containerId: "general-toast",
-    });
+  // const handlePlayerJoiningPromise = async () => {
+  //   const toastId = toast.info("Asking Host...", {
+  //     containerId: "general-toast",
+  //   });
 
-    return new Promise(async (resolve, reject) => {
-      let result = "";
+  //   return new Promise(async (resolve, reject) => {
+  //     let result = "";
 
-      const timeoutId = setTimeout(() => {
-        result = "The host did not respond in time.";
-        reject(result);
-      }, 5000);
+  //     const timeoutId = setTimeout(() => {
+  //       result = "The host did not respond in time.";
+  //       reject(result);
+  //     }, 5000);
 
-      await socket.on("host-accepted", async (gameData) => {
-        result = "The host accepted the challenge.";
-        toast.dismiss(toastId);
-        clearTimeout(timeoutId);
-        navigate(`/Room/${gameData.id}/Settings`);
-        resolve(result);
-      });
+  //     await socket.on("host-accepted", async (gameData) => {
+  //       result = "The host accepted the challenge.";
+  //       toast.dismiss(toastId);
+  //       clearTimeout(timeoutId);
+  //       navigate(`/Room/${gameData.id}/Settings`);
+  //       resolve(result);
+  //     });
 
-      await socket.on("host-denied", async () => {
-        result = "The host denied the challenge.";
-        toast.dismiss(toastId);
-        clearTimeout(timeoutId);
-        reject(result);
-      });
-    });
-  };
+  //     await socket.on("host-denied", async () => {
+  //       result = "The host denied the challenge.";
+  //       toast.dismiss(toastId);
+  //       clearTimeout(timeoutId);
+  //       reject(result);
+  //     });
+  //   });
+  // };
 
   const changeSortingByText = (isMulti, option) => {
     if (!isMulti) {
@@ -478,7 +497,7 @@ const Lobbypage = ({
                 setSingleGamesCopy={setSingleGamesCopy}
                 multiGames={multiGames}
                 setMultiGamesCopy={setMultiGamesCopy}
-                socket={socket}
+                // socket={socket}
                 token={token}
               />
             )}
@@ -551,7 +570,7 @@ const Lobbypage = ({
               singleGamesCopy={singleGamesCopy}
               joinWithPassword={joinWithPassword}
               setJoinWithPassword={setJoinWithPassword}
-              handleJoin={handleJoin}
+              // handleJoin={handleJoin}
               sortingByTextSingle={sortingByTextSingle}
               loading={loading}
               error={error}
@@ -611,7 +630,8 @@ const Lobbypage = ({
                 )}
               </animated.div>
             </div>
-            <RenderMultiGames
+            <h1 style={{ color: "red", textAlign: "center" }}>Offline</h1>
+            {/* <RenderMultiGames
               screenVersion={screenVersion}
               multiGamesCopy={multiGamesCopy}
               joinWithPassword={joinWithPassword}
@@ -620,7 +640,7 @@ const Lobbypage = ({
               sortingByTextMulti={sortingByTextMulti}
               loading={loading}
               error={error}
-            />
+            /> */}
           </div>
         </div>
       </section>
@@ -679,7 +699,7 @@ const Lobbypage = ({
               >
                 SinglePlayer
               </Button>
-              <Button
+              {/* <Button
                 className={isMultiplayer ? "lobby-modal-mode-button" : null}
                 variant="success"
                 onClick={() => {
@@ -687,7 +707,7 @@ const Lobbypage = ({
                 }}
               >
                 MultiPlayer
-              </Button>
+              </Button> */}
 
               <Form.Label className="lobby-modal-allowSpecs">
                 Allow Spectators?

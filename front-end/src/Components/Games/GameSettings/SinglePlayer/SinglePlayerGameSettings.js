@@ -22,7 +22,7 @@ const SinglePlayerGameSettings = ({
   user,
   token,
   error,
-  socket,
+  // socket,
   player1Data,
   player2Data,
   setPlayer1Data,
@@ -34,43 +34,96 @@ const SinglePlayerGameSettings = ({
   const [botData, setBotData] = useState({});
 
   useEffect(() => {
+    fetchPlayerData();
     fetchBotsData();
 
-    socket.emit("get-single-game-data", game.id);
+    // socket.emit("get-single-game-data", game.id);
 
-    socket.on(
-      "single-player-reconnected",
-      (gameData, playerData, backendBotData) => {
-        setGame(gameData);
-        setPlayer1Data(playerData);
-        setBotData(backendBotData);
-        setPlayer2Data(backendBotData);
-      }
-    );
+    // socket.on(
+    //   "single-player-reconnected",
+    //   (gameData, playerData, backendBotData) => {
+    //     setGame(gameData);
+    //     setPlayer1Data(playerData);
+    //     setBotData(backendBotData);
+    //     setPlayer2Data(backendBotData);
+    //   }
+    // );
 
-    socket.on("single-room-settings", (gameData) => {
-      setGame(gameData);
-    });
-
-    socket.on("single-started", (gameData, playerData, backendBotData) => {
-      setGame(gameData);
-      setPlayer1Data(playerData);
-      setBotData(backendBotData);
-      setPlayer2Data(backendBotData);
-      navigate(`/room/${game.id}`);
-    });
-
-    // socket.on("update-bot-difficulty", (botData) => {
-    //   console.log("inside update bot frontend");
-    //   setPlayer2Data(botData);
+    // socket.on("single-room-settings", (gameData) => {
+    //   setGame(gameData);
     // });
 
-    return () => {
-      socket.off("single-player-reconnected");
-      socket.off("single-started");
-      // socket.off("update-bot-difficulty");
-    };
+    // socket.on("single-started", (gameData, playerData, backendBotData) => {
+    //   setGame(gameData);
+    //   setPlayer1Data(playerData);
+    //   setBotData(backendBotData);
+    //   setPlayer2Data(backendBotData);
+    //   navigate(`/room/${game.id}`);
+    // });
+
+    // // socket.on("update-bot-difficulty", (botData) => {
+    // //   console.log("inside update bot frontend");
+    // //   setPlayer2Data(botData);
+    // // });
+
+    // return () => {
+    //   socket.off("single-player-reconnected");
+    //   socket.off("single-started");
+    //   // socket.off("update-bot-difficulty");
+    // };
   }, []); // eslint-disable-line
+
+  const fetchPlayerData = async () => {
+    const userOrGuest = user.is_guest
+      ? `${API}/guests/guest`
+      : `${API}/users/user`;
+
+    let guest = false;
+
+    try {
+      await axios
+        .get(userOrGuest, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (res.data.payload.is_guest) {
+            guest = true;
+          }
+        });
+
+      if (guest) {
+        return axios
+          .get(`${API}/guests/guest`, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .then((res) => {
+            setPlayer1Data(res.data.payload);
+          })
+          .catch((err) => {
+            // console.log(err);
+          });
+      } else {
+        return axios
+          .get(`${API}/users/user`, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .then((res) => {
+            setPlayer1Data(res.data.payload);
+          })
+          .catch((err) => {
+            // console.log(err);
+          });
+      }
+    } catch (err) {
+      // console.log(err);
+    }
+  };
 
   const fetchBotsData = async () => {
     return axios
@@ -124,10 +177,13 @@ const SinglePlayerGameSettings = ({
               authorization: `Bearer ${token}`,
             },
           })
+          .then(() => {
+            navigate(`/room/${res.data.payload.id}`);
+          })
           .catch((err) => {
             // console.log(err.response.data);
           });
-        socket.emit("start-single-player-game", res.data.payload);
+        // socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
         // console.log(err.message);
@@ -354,7 +410,7 @@ const SinglePlayerGameSettings = ({
         </div>
         <h4>VS</h4>
         <div className="single-player-game-settings-botData">
-          {botData.name !== "QueryResultError" ? (
+          {Object.keys(botData).length > 0 ? (
             <>
               <Image
                 src={botData.profileimg}
@@ -375,7 +431,11 @@ const SinglePlayerGameSettings = ({
               </div>
             </>
           ) : (
-            <h1>Please select a bot to play against</h1>
+            <h1>
+              Please select a bot
+              <br />
+              to play against
+            </h1>
           )}
         </div>
 

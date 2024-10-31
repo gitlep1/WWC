@@ -63,11 +63,14 @@ const Homepage = ({ screenVersion, user, token }) => {
               <br />
               chat system
               <br />
+              Tasks (can only be completed in multiplayer)
+              <br />
               <br />
               To ensure a better and more sustainable user experience, I'm
-              migrating to AWS for backend hosting. This upgrade involves
-              learning and integrating new technologies, so the process may take
-              a bit of time.
+              migrating to AWS for backend hosting.
+              <br />
+              This upgrade involves me learning and integrating new
+              technologies, so the process will take time.
               <br />
               <br />
               Thank you for your patience and support as I work to bring
@@ -104,7 +107,7 @@ const Homepage = ({ screenVersion, user, token }) => {
               </div>
               <div className="tasks-content">
                 {user.is_guest ? (
-                  <p>
+                  <p style={{ color: "red" }}>
                     {/* Please create an account to participate in daily and monhtly
                     tasks for rewards. */}
                     Offline
@@ -112,13 +115,12 @@ const Homepage = ({ screenVersion, user, token }) => {
                 ) : dailyTaskSelected ? (
                   // <DailyTasks user={user} token={token} />
                   <div>
-                    <p>Offline</p>
+                    <p style={{ color: "red" }}>Offline</p>
                   </div>
                 ) : (
                   // <MonthlyTasks user={user} token={token} />
-                  <div>
-                    <p>Offline</p>
-                  </div>
+
+                  <p style={{ color: "red" }}>Offline</p>
                 )}
               </div>
             </div>

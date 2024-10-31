@@ -24,9 +24,9 @@ import DefaultProfImg from "./Images/Profiles/DefaultProfImg.png";
 import CustomToastContainers from "./CustomToasts/CustomToastContainers";
 
 const API = process.env.REACT_APP_API_URL;
-const socket = io(API, {
-  withCredentials: true,
-});
+// const socket = io(API, {
+//   withCredentials: true,
+// });
 
 const App = () => {
   const desktopVersion = "desktop";
@@ -220,7 +220,7 @@ const App = () => {
           handleLogout={handleLogout}
           resize={resize}
           setResize={setResize}
-          socket={socket}
+          // socket={socket}
         />
       );
     }
@@ -247,7 +247,7 @@ const App = () => {
           handleLogout={handleLogout}
           resize={resize}
           setResize={setResize}
-          socket={socket}
+          // socket={socket}
         />
       );
     }

@@ -41,7 +41,7 @@ const DesktopApp = ({
   handleLogout,
   resize,
   setResize,
-  socket,
+  // socket,
 }) => {
   const screenVersion = "desktop";
 
@@ -136,7 +136,7 @@ const DesktopApp = ({
                   isMultiplayer={isMultiplayer}
                   setIsMultiplayer={setIsMultiplayer}
                   token={token}
-                  socket={socket}
+                  // socket={socket}
                 />
               }
             />
@@ -147,7 +147,7 @@ const DesktopApp = ({
                   screenVersion={screenVersion}
                   user={user}
                   token={token}
-                  socket={socket}
+                  // socket={socket}
                   player1Data={player1Data}
                   player2Data={player2Data}
                   setPlayer1Data={setPlayer1Data}
@@ -162,7 +162,7 @@ const DesktopApp = ({
                   screenVersion={screenVersion}
                   user={user}
                   token={token}
-                  socket={socket}
+                  // socket={socket}
                   player1Data={player1Data}
                   player2Data={player2Data}
                   setPlayer1Data={setPlayer1Data}
@@ -178,7 +178,6 @@ const DesktopApp = ({
                   screenVersion={screenVersion}
                   user={user}
                   token={token}
-                  socket={socket}
                 />
               }
             />
@@ -202,7 +201,11 @@ const DesktopApp = ({
           </Route>
         </Routes>
 
-        <ChatBox token={token} socket={socket} user={user} />
+        <ChatBox
+          token={token}
+          // socket={socket}
+          user={user}
+        />
       </main>
 
       {openInventory ? (

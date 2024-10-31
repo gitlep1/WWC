@@ -51,7 +51,7 @@ const SinglePlayerGame = ({
   setPlayer1Data,
   setPlayer2Data,
   endGame,
-  socket,
+  // socket,
   token,
 }) => {
   let currGameData = {};
@@ -108,66 +108,119 @@ const SinglePlayerGame = ({
 
   const reloadPlayerAndGameData = async () => {
     return new Promise((resolve, reject) => {
-      socket.emit("get-single-game-data", gameID);
+      axios
+        .get(`${API}/single-games/${gameID}`, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (res) => {
+          const gameData = res.data.payload;
+          const currentPosition = gameData.current_positions;
 
-      socket.on(
-        "single-player-reconnected",
-        async (gameData, player1, player2) => {
-          try {
-            const currentPosition = gameData.current_positions;
-            setFen(currentPosition);
+          setFen(currentPosition);
+          setGame(gameData);
+          setChessGame(new Chess(currentPosition));
 
-            setGame(gameData);
-            setChessGame(new Chess(currentPosition));
-            setPlayer1Data(player1);
-            setPlayer2Data(player2);
+          const userOrGuest = user.is_guest
+            ? `${API}/guests/guest`
+            : `${API}/users/user`;
 
-            currGameData = gameData;
+          const getPlayerData = axios
+            .get(userOrGuest, {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              setPlayer1Data(res.data.payload);
+            })
+            .catch((err) => {
+              reject(err);
+            });
 
-            const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
+          const getBotData = axios
+            .get(`${API}/bots/${gameData.botid}`, {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              setPlayer2Data(res.data.payload);
+            })
+            .catch((err) => {
+              reject(err);
+            });
 
-            // if (checkIfBotsTurn === "b") {
-            //   await makeRandomMove();
-            // } else {
-            //   resolve();
-            // }
+          await axios.all([getPlayerData, getBotData]);
 
+          currGameData = gameData;
+          const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
+
+          if (checkIfBotsTurn === "b") {
+            await makeRandomMove();
+          } else {
             resolve();
-          } catch (error) {
-            reject(error);
           }
-        }
-      );
+          resolve();
+        })
+        .catch((err) => {
+          reject(err);
+        });
+      // socket.emit("get-single-game-data", gameID);
+      // socket.on(
+      //   "single-player-reconnected",
+      //   async (gameData, player1, player2) => {
+      //     try {
+      //       const currentPosition = gameData.current_positions;
+      //       setFen(currentPosition);
+      //       setGame(gameData);
+      //       setChessGame(new Chess(currentPosition));
+      //       setPlayer1Data(player1);
+      //       setPlayer2Data(player2);
+      //       currGameData = gameData;
+      //       const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
+      //       // if (checkIfBotsTurn === "b") {
+      //       //   await makeRandomMove();
+      //       // } else {
+      //       //   resolve();
+      //       // }
+      //       resolve();
+      //     } catch (error) {
+      //       reject(error);
+      //     }
+      //   }
+      // );
     });
   };
 
-  useEffect(() => {
-    socket.on(
-      "single-game-state-updated",
-      async (singleGameUpdated, updatedMoveHistory) => {
-        setGame(singleGameUpdated);
-        setFen(singleGameUpdated.current_positions);
-      }
-    );
+  // useEffect(() => {
+  //   socket.on(
+  //     "single-game-state-updated",
+  //     async (singleGameUpdated, updatedMoveHistory) => {
+  //       setGame(singleGameUpdated);
+  //       setFen(singleGameUpdated.current_positions);
+  //     }
+  //   );
 
-    socket.on("single-game-ended", (errorMessage) => {
-      toast.error(errorMessage, {
-        containerId: "toast-notify",
-      });
-      socket.off("single-player-reconnected");
-      navigate("/Lobby");
-    });
+  //   socket.on("single-game-ended", (errorMessage) => {
+  //     toast.error(errorMessage, {
+  //       containerId: "toast-notify",
+  //     });
+  //     socket.off("single-player-reconnected");
+  //     navigate("/Lobby");
+  //   });
 
-    socket.on("single-game-state-updated-error", async (errorMessage) => {
-      // console.log(errorMessage);
-    });
+  //   socket.on("single-game-state-updated-error", async (errorMessage) => {
+  //     // console.log(errorMessage);
+  //   });
 
-    return () => {
-      socket.off("single-game-state-updated");
-      socket.off("single-game-ended");
-      socket.off("single-game-state-updated-error");
-    };
-  }, [navigate, setGame, socket]);
+  //   return () => {
+  //     socket.off("single-game-state-updated");
+  //     socket.off("single-game-ended");
+  //     socket.off("single-game-state-updated-error");
+  //   };
+  // }, [navigate, setGame, socket]);
 
   useEffect(() => {
     prevBoard.current.push(fen);
@@ -292,7 +345,7 @@ const SinglePlayerGame = ({
         to: to,
       };
       // console.log({ player: updatedPositions });
-      socket.emit("single-move-piece", game, updatedPositions, piece, "w");
+      // socket.emit("single-move-piece", game, updatedPositions, piece, "w");
 
       const history = {
         from,
