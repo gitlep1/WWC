@@ -62,7 +62,7 @@ const deleteUser = async (id) => {
   }
 
   const deletedUser = await db.oneOrNone(
-    "DELETE FROM users WHERE id = $1 AND users.is_guest = false",
+    "DELETE FROM users WHERE id = $1 AND users.is_guest = false RETURNING *",
     id
   );
   return deletedUser;

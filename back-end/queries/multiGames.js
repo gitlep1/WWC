@@ -81,7 +81,6 @@ const deleteGame = async (id) => {
     "DELETE FROM games WHERE id = $1 RETURNING *",
     id
   );
-  console.log({ id, deletedGame });
   return deletedGame;
 };
 

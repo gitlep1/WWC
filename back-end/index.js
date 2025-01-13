@@ -29,7 +29,6 @@ const allowedOrigins = [
   "https://world-wide-chess-updates.vercel.app",
   "https://world-wide-chess.netlify.app",
   "https://world-wide-chess-updates.netlify.app",
-  "https://world-wide-chess-updates-api.vercel.app",
 ];
 
 const httpServer = http.createServer(app);
@@ -94,6 +93,8 @@ app.use("/messages", messagesController);
 app.use("/daily-tasks", dailyTasksController);
 app.use("/monthly-tasks", monthlyTasksController);
 
+// use ${} in ternary to check for username and pw
+
 app.get("/", (req, res) => {
   res.send(`
   <h1>World Wide Chess</h1>
@@ -114,7 +115,7 @@ app.get("*", (req, res) => {
   res.status(404).send("GET OUT OF HERE OR THE SITE DEMONS WILL GET YOU!!!");
 });
 
-addSocketEventListeners(io);
+// addSocketEventListeners(io);
 
 const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => {
